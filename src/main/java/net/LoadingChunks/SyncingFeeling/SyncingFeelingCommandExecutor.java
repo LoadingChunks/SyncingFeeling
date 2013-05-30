@@ -41,6 +41,27 @@ public class SyncingFeelingCommandExecutor implements CommandExecutor {
     		sender.sendMessage(ChatColor.AQUA + "Syncing your Inventory...");
     		return true;
     	}
+    	
+    	if(command.getName().equalsIgnoreCase("sf") && sender.hasPermission("sync.admin")) {	
+    		if(args.length > 0 && args[0].equalsIgnoreCase("syncall")) {
+    			for(Player p : plugin.getServer().getOnlinePlayers()) {
+    				SerializableInventory si = SerializableInventory.fromInventory(p, p.getInventory());
+    				si.commit();
+    				sender.sendMessage(ChatColor.AQUA + "Committing Inventory: " + p.getDisplayName());
+    			}
+    			return true;
+    		}
+    		
+    		if(args.length > 0 && args[0].equalsIgnoreCase("debug")) {
+    			if(plugin.isDebugMode) {
+    				plugin.isDebugMode = false;
+    				sender.sendMessage(ChatColor.AQUA + "SyncingFeeling Debug Mode Disabled");
+    			} else {
+    				plugin.isDebugMode = true;
+    				sender.sendMessage(ChatColor.AQUA + "SyncingFeeling Debug Mode Enabled");
+    			}
+    		}
+    	}
         return false;
     }
 }

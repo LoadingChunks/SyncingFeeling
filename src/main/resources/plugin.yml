@@ -1,8 +1,11 @@
 name: SyncingFeeling
 main: net.LoadingChunks.SyncingFeeling.SyncingFeeling
-version: 0.1
+version: 0.8
 
 commands:
    sync:
       description: Sync Inventory
       usage: /sync
+   sf:
+      description: SyncingFeeling Admin
+      usage: /sync <syncall|debug>

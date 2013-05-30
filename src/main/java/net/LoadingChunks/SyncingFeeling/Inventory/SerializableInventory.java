@@ -32,9 +32,10 @@ public class SerializableInventory {
 	
 	public void commit() {
 		this.commitInventory(true);
-		for(Entry<Integer, ItemStack> item : slots.entrySet()) {
+		SQLWrapper.commitSlots(this.player, slots);
+		/*for(Entry<Integer, ItemStack> item : slots.entrySet()) {
 			SQLWrapper.commitSlot(this.player, item.getKey(), item.getValue());
-		}
+		}*/
 	}
 	
 	public void commitInventory(boolean clear) {
@@ -53,7 +54,7 @@ public class SerializableInventory {
 	
 	public static void recover(Player p) {
 		String latest = SQLWrapper.checkLatest(p);
-		if(!latest.equalsIgnoreCase(SQLWrapper.getPlugin().getConfig().getString("general.server.name"))) {
+		if(!latest.equalsIgnoreCase(SQLWrapper.getPlugin().getConfig().getString("general.server.name")) && !latest.equals((""))) {
 			p.sendMessage(ChatColor.AQUA + "Updating your inventory with data from another zone, please wait...");
 			SQLWrapper.recoverLatest(p, latest);
 			p.sendMessage(ChatColor.AQUA + "Your inventory has been updated!");

@@ -5,7 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -66,6 +69,41 @@ public class SQLWrapper {
 			stat.setInt(4, slot);
 			
 			stat.setString(5, obj.toJSONString());
+			
+			stat.execute();
+		} catch (SQLException e) { e.printStackTrace(); }
+	}
+	
+	static public void commitSlots(Player p, HashMap<Integer, ItemStack> slots) {
+		try {
+			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES ";
+			
+			for(int i = 0; i < slots.size(); i++) {
+				sqlstring.concat("(?,?,?,?,MD5(?))");
+				
+				if(i < slots.size()-1)
+					sqlstring.concat(",");
+			}
+			
+			PreparedStatement stat = con.prepareStatement(sqlstring);
+			
+			ArrayList<String> sqls = new ArrayList<String>();
+			
+			int i = 0;
+			String name = SQLWrapper.plugin.getConfig().getString("general.server.name");
+			for(Entry<Integer, ItemStack> slot : slots.entrySet()) {
+				stat.setString((i*5) + 1, name);
+				stat.setString((i*5) + 2, p.getName());
+				JSONObject obj = new JSONObject();
+				obj.putAll(slot.getValue().serialize());
+				stat.setString((i*5) + 3, obj.toJSONString());
+				stat.setInt((i*5) + 4, slot.getKey());
+				stat.setString((i*5) + 5, obj.toJSONString());
+				i++;
+			}
+			
+			if(plugin.isDebugMode)
+				plugin.getLogger().info("Committing Slot Array: " + stat.toString());
 			
 			stat.execute();
 		} catch (SQLException e) { e.printStackTrace(); }

@@ -28,6 +28,7 @@ public class SyncingFeeling extends JavaPlugin {
 	private final SyncingFeelingCommandExecutor commandExecutor = new SyncingFeelingCommandExecutor(this);
 	private final SyncingFeelingEventListener eventListener = new SyncingFeelingEventListener(this);
 	private PluginManager pm;
+	public boolean isDebugMode = false;
 	//ClassListeners
 
 	public void onDisable() {
@@ -37,6 +38,7 @@ public class SyncingFeeling extends JavaPlugin {
 	public void onEnable() { 
 		pm = this.getServer().getPluginManager();
 		getCommand("sync").setExecutor(commandExecutor);
+		getCommand("sf").setExecutor(commandExecutor);
 
 		// you can register multiple classes to handle events if you want
 		// just call pm.registerEvents() on an instance of each class
