@@ -56,7 +56,7 @@ public class SQLWrapper {
 	
 	static public void commitSlot(Player p, Integer slot, ItemStack stack) {
 		try {
-			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`,`timestamp`) VALUES (?,?,?,?,MD5(?)),");
+			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES (?,?,?,?,MD5(?)),");
 			
 			stat.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
 			stat.setString(2, p.getName());
