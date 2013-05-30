@@ -17,16 +17,23 @@ package net.LoadingChunks.SyncingFeeling;
     along with SyncingFeeling. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.util.ArrayList;
+
 import net.LoadingChunks.SyncingFeeling.Inventory.SerializableInventory;
+import net.LoadingChunks.SyncingFeeling.Tasks.RecoverTask;
 
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.scheduler.BukkitTask;
 
 public class SyncingFeelingEventListener implements Listener {
 
 	private SyncingFeeling plugin;
+	
+	private ArrayList<BukkitTask> syncTasks = new ArrayList<BukkitTask>();
 
 	public SyncingFeelingEventListener(SyncingFeeling plugin) {
 		this.plugin = plugin;
@@ -50,9 +57,8 @@ public class SyncingFeelingEventListener implements Listener {
 			SerializableInventory.fromInventory(event.getEntity(), event.getEntity().getInventory()).commit();
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onJoin(PlayerJoinEvent event) {
-		if(event.getPlayer().hasPermission("sync.do"))
-			SerializableInventory.recover(event.getPlayer());
+		syncTasks.add(new RecoverTask(plugin,event.getPlayer()).runTaskLater(plugin, 40));
 	}
 }
