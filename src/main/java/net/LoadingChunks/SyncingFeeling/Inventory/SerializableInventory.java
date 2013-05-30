@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import net.LoadingChunks.SyncingFeeling.util.SQLWrapper;
 
 import org.bukkit.craftbukkit.libs.joptsimple.util.KeyValuePair;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftInventory;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
