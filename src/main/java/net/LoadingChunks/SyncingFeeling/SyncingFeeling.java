@@ -27,7 +27,7 @@ public class SyncingFeeling extends JavaPlugin {
 	//ClassListeners
 	private final SyncingFeelingCommandExecutor commandExecutor = new SyncingFeelingCommandExecutor(this);
 	private final SyncingFeelingEventListener eventListener = new SyncingFeelingEventListener(this);
-	private final PluginManager pm = this.getServer().getPluginManager();
+	private PluginManager pm;
 	//ClassListeners
 
 	public void onDisable() {
@@ -35,7 +35,7 @@ public class SyncingFeeling extends JavaPlugin {
 	}
 
 	public void onEnable() { 
-
+		pm = this.getServer().getPluginManager();
 		getCommand("sync").setExecutor(commandExecutor);
 
 		// you can register multiple classes to handle events if you want
