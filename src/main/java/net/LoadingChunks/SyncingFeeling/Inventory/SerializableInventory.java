@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 
 import net.LoadingChunks.SyncingFeeling.util.SQLWrapper;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -53,7 +54,9 @@ public class SerializableInventory {
 	public static void recover(Player p) {
 		String latest = SQLWrapper.checkLatest(p);
 		if(!latest.equalsIgnoreCase(SQLWrapper.getPlugin().getConfig().getString("general.server.name"))) {
+			p.sendMessage(ChatColor.AQUA + "Updating your inventory with data from another zone, please wait...");
 			SQLWrapper.recoverLatest(p, latest);
+			p.sendMessage(ChatColor.AQUA + "Your inventory has been updated!");
 		}
 	}
 }

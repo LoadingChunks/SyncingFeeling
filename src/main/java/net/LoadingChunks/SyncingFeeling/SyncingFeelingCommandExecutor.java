@@ -19,6 +19,7 @@ package net.LoadingChunks.SyncingFeeling;
 
 import net.LoadingChunks.SyncingFeeling.Inventory.SerializableInventory;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,6 +38,8 @@ public class SyncingFeelingCommandExecutor implements CommandExecutor {
     	if (command.getName().equalsIgnoreCase("sync") && sender instanceof Player && sender.hasPermission("sync.do")) {
     		SerializableInventory si = SerializableInventory.fromInventory(((Player)sender), ((Player)sender).getInventory());
     		si.commit();
+    		sender.sendMessage(ChatColor.AQUA + "Syncing your Inventory...");
+    		return true;
     	}
         return false;
     }

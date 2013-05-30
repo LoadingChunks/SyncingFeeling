@@ -52,7 +52,7 @@ public class SyncingFeelingEventListener implements Listener {
 	
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
-		if(event.getPlayer().hasPermission("sync.mirror"))
+		if(event.getPlayer().hasPermission("sync.do"))
 			SerializableInventory.recover(event.getPlayer());
 	}
 }
