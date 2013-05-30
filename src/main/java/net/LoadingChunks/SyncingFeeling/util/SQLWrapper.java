@@ -79,15 +79,13 @@ public class SQLWrapper {
 			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES ";
 			
 			for(int i = 0; i < slots.size(); i++) {
-				sqlstring.concat("(?,?,?,?,MD5(?))");
+				sqlstring = sqlstring.concat("(?,?,?,?,MD5(?))");
 				
 				if(i < slots.size()-1)
-					sqlstring.concat(",");
+					sqlstring = sqlstring.concat(",");
 			}
 			
 			PreparedStatement stat = con.prepareStatement(sqlstring);
-			
-			ArrayList<String> sqls = new ArrayList<String>();
 			
 			int i = 0;
 			String name = SQLWrapper.plugin.getConfig().getString("general.server.name");
