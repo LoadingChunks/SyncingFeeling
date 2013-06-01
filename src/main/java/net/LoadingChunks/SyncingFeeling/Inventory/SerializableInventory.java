@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import net.LoadingChunks.SyncingFeeling.util.SQLWrapper;
+import net.LoadingChunks.SyncingFeeling.util.Slots;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -22,6 +23,12 @@ public class SerializableInventory {
 			ret.addStack(i, stack);
 			i++;
 		}
+		
+		ret.addStack(Slots.HELMET.slotNum(), inv.getHelmet());
+		ret.addStack(Slots.CHEST.slotNum(), inv.getChestplate());
+		ret.addStack(Slots.LEGGINGS.slotNum(), inv.getLeggings());
+		ret.addStack(Slots.BOOTS.slotNum(), inv.getBoots());
+
 		return ret;
 	}
 	

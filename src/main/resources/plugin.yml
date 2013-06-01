@@ -1,6 +1,6 @@
 name: SyncingFeeling
 main: net.LoadingChunks.SyncingFeeling.SyncingFeeling
-version: 0.8
+version: 0.8.1
 
 commands:
    sync:

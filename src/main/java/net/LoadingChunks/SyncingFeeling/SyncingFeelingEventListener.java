@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import net.LoadingChunks.SyncingFeeling.Inventory.SerializableInventory;
 import net.LoadingChunks.SyncingFeeling.Tasks.RecoverTask;
 
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -57,8 +59,22 @@ public class SyncingFeelingEventListener implements Listener {
 			SerializableInventory.fromInventory(event.getEntity(), event.getEntity().getInventory()).commit();
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onJoin(PlayerJoinEvent event) {
 		syncTasks.add(new RecoverTask(plugin,event.getPlayer()).runTaskLater(plugin, 40));
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onStop(PlayerCommandPreprocessEvent event) {
+		if((event.getMessage().equalsIgnoreCase("/stop") || event.getMessage().equalsIgnoreCase("stop")) && event.getPlayer().isOp()) {
+			plugin.getLogger().info(ChatColor.AQUA + "Server is stopping, sync everyone's inventory!");
+			for(Player p : plugin.getServer().getOnlinePlayers()) {
+				if(p.hasPermission("sync.do")) {
+					SerializableInventory si = SerializableInventory.fromInventory(p, p.getInventory());
+					si.commit();
+				}
+			}
+			plugin.getLogger().info(ChatColor.AQUA + "Sync complete!");
+		}
 	}
 }

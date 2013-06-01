@@ -5,7 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -77,6 +76,9 @@ public class SQLWrapper {
 	static public void commitSlots(Player p, HashMap<Integer, ItemStack> slots) {
 		try {
 			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES ";
+			
+			if(slots.size() == 0)
+				return;
 			
 			for(int i = 0; i < slots.size(); i++) {
 				sqlstring = sqlstring.concat("(?,?,?,?,MD5(?))");
@@ -158,7 +160,18 @@ public class SQLWrapper {
 				try {
 					Map<String, Object> map = (Map<String, Object>) parser.parse(result.getString("json"));
 					ItemStack stack = ItemStack.deserialize(map);
-					p.getInventory().setItem(slot, stack);
+					
+					if(slot == Slots.HELMET.slotNum()) {
+						p.getInventory().setHelmet(stack);
+					} else if(slot == Slots.CHEST.slotNum()) {
+						p.getInventory().setChestplate(stack);
+					} else if(slot == Slots.LEGGINGS.slotNum()) {
+						p.getInventory().setLeggings(stack);
+					} else if(slot == Slots.BOOTS.slotNum()) {
+						p.getInventory().setBoots(stack);
+					} else {
+						p.getInventory().setItem(slot, stack);
+					}
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}

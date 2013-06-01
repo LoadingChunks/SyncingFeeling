@@ -45,9 +45,11 @@ public class SyncingFeelingCommandExecutor implements CommandExecutor {
     	if(command.getName().equalsIgnoreCase("sf") && sender.hasPermission("sync.admin")) {	
     		if(args.length > 0 && args[0].equalsIgnoreCase("syncall")) {
     			for(Player p : plugin.getServer().getOnlinePlayers()) {
-    				SerializableInventory si = SerializableInventory.fromInventory(p, p.getInventory());
-    				si.commit();
-    				sender.sendMessage(ChatColor.AQUA + "Committing Inventory: " + p.getDisplayName());
+    				if(p.hasPermission("sync.do")) {
+    					SerializableInventory si = SerializableInventory.fromInventory(p, p.getInventory());
+    					si.commit();
+    					sender.sendMessage(ChatColor.AQUA + "Committing Inventory: " + p.getDisplayName());
+    				}
     			}
     			return true;
     		}
