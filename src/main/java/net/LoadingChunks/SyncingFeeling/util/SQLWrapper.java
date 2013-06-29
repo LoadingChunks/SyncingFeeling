@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -56,8 +57,21 @@ public class SQLWrapper {
 		return success;
 	}
 	
+	static public boolean reconnect() {
+		try {
+			if(con.isClosed()) {
+				return connect();
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
 	static public void commitSlot(Player p, Integer slot, ItemStack stack) {
 		try {
+			reconnect();
 			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES (?,?,?,?,MD5(?))");
 			
 			stat.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
@@ -73,17 +87,18 @@ public class SQLWrapper {
 		} catch (SQLException e) { e.printStackTrace(); }
 	}
 	
-	static public void commitSlots(Player p, HashMap<Integer, ItemStack> slots) {
+	static public void commitSlots(Player p, SerializableInventory inv) {
 		try {
-			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES ";
+			reconnect();
+			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`) VALUES ";
 			
-			if(slots.size() == 0)
+			if(inv.getSlots().size() == 0)
 				return;
 			
-			for(int i = 0; i < slots.size(); i++) {
+			for(int i = 0; i < inv.getSlots().size(); i++) {
 				sqlstring = sqlstring.concat("(?,?,?,?,MD5(?))");
 				
-				if(i < slots.size()-1)
+				if(i < inv.getSlots().size()-1)
 					sqlstring = sqlstring.concat(",");
 			}
 			
@@ -91,14 +106,15 @@ public class SQLWrapper {
 			
 			int i = 0;
 			String name = SQLWrapper.plugin.getConfig().getString("general.server.name");
-			for(Entry<Integer, ItemStack> slot : slots.entrySet()) {
+			for(Entry<Integer, ItemStack> slot : inv.getSlots().entrySet()) {
 				stat.setString((i*5) + 1, name);
 				stat.setString((i*5) + 2, p.getName());
+				
 				JSONObject obj = new JSONObject();
-				obj.putAll(slot.getValue().serialize());
+				obj.putAll(SerializableInventory.serialize(slot.getValue()));
+				
 				stat.setString((i*5) + 3, obj.toJSONString());
 				stat.setInt((i*5) + 4, slot.getKey());
-				stat.setString((i*5) + 5, obj.toJSONString());
 				i++;
 			}
 			
@@ -111,13 +127,11 @@ public class SQLWrapper {
 	
 	static public void commitInventory(SerializableInventory inv, Player p, boolean clear) {
 		try {
-			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_inventories` (`server`,`player`,`hash`) VALUES (?,?,MD5(?))");
+			reconnect();
+			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_inventories` (`server`,`player`) VALUES (?,?,MD5(?))");
 			
 			stat.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
 			stat.setString(2, p.getName());
-			JSONObject obj = new JSONObject();
-			obj.putAll(inv.serialize());
-			stat.setString(3, obj.toJSONString());
 			
 			stat.execute();
 			
@@ -132,6 +146,7 @@ public class SQLWrapper {
 	
 	public static String checkLatest(Player p) {
 		try {
+			reconnect();
 			PreparedStatement stat = con.prepareStatement("SELECT `server`,`hash` FROM `inv_inventories` WHERE `player` = ? ORDER BY `timestamp` DESC LIMIT 1");
 			stat.setString(1, p.getName());
 			stat.execute();
@@ -146,6 +161,7 @@ public class SQLWrapper {
 
 	public static void recoverLatest(Player p, String server) {
 		try {
+			reconnect();
 			PreparedStatement stat = con.prepareStatement("SELECT * FROM `inv_slots` WHERE `server` = ? AND `player` = ?");
 			stat.setString(1, server);
 			stat.setString(2, p.getName());
@@ -159,7 +175,7 @@ public class SQLWrapper {
 				JSONParser parser = new JSONParser();
 				try {
 					Map<String, Object> map = (Map<String, Object>) parser.parse(result.getString("json"));
-					ItemStack stack = ItemStack.deserialize(map);
+					ItemStack stack = (ItemStack) SerializableInventory.deserialize(map);
 					
 					if(slot == Slots.HELMET.slotNum()) {
 						p.getInventory().setHelmet(stack);
