@@ -129,7 +129,7 @@ public class SQLWrapper {
 	static public void commitInventory(SerializableInventory inv, Player p, boolean clear) {
 		try {
 			reconnect();
-			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_inventories` (`server`,`player`) VALUES (?,?,MD5(?))");
+			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_inventories` (`server`,`player`) VALUES (?,?)");
 			
 			stat.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
 			stat.setString(2, p.getName());
