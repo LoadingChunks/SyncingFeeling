@@ -72,7 +72,7 @@ public class SQLWrapper {
 	static public void commitSlot(Player p, Integer slot, ItemStack stack) {
 		try {
 			reconnect();
-			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`,`hash`) VALUES (?,?,?,?,MD5(?))");
+			PreparedStatement stat = con.prepareStatement("REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`) VALUES (?,?,?,?)");
 			
 			stat.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
 			stat.setString(2, p.getName());
@@ -80,8 +80,6 @@ public class SQLWrapper {
 			obj.putAll(stack.serialize());
 			stat.setString(3, obj.toJSONString());
 			stat.setInt(4, slot);
-			
-			stat.setString(5, obj.toJSONString());
 			
 			stat.execute();
 		} catch (SQLException e) { e.printStackTrace(); }
@@ -148,7 +146,7 @@ public class SQLWrapper {
 	public static String checkLatest(Player p) {
 		try {
 			reconnect();
-			PreparedStatement stat = con.prepareStatement("SELECT `server`,`hash` FROM `inv_inventories` WHERE `player` = ? ORDER BY `timestamp` DESC LIMIT 1");
+			PreparedStatement stat = con.prepareStatement("SELECT `server` FROM `inv_inventories` WHERE `player` = ? ORDER BY `timestamp` DESC LIMIT 1");
 			stat.setString(1, p.getName());
 			stat.execute();
 			ResultSet set = stat.getResultSet();
