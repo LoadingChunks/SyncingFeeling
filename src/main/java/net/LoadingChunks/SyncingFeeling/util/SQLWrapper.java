@@ -115,6 +115,7 @@ public class SQLWrapper {
 				
 				stat.setString((i*5) + 3, obj.toJSONString());
 				stat.setInt((i*5) + 4, slot.getKey());
+				stat.setString((i*5) + 5, obj.toJSONString());
 				i++;
 			}
 			
