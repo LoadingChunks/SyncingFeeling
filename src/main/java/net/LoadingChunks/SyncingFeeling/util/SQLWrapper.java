@@ -105,14 +105,14 @@ public class SQLWrapper {
 			int i = 0;
 			String name = SQLWrapper.plugin.getConfig().getString("general.server.name");
 			for(Entry<Integer, ItemStack> slot : inv.getSlots().entrySet()) {
-				stat.setString((i*5) + 1, name);
-				stat.setString((i*5) + 2, p.getName());
+				stat.setString((i*4) + 1, name);
+				stat.setString((i*4) + 2, p.getName());
 				
 				JSONObject obj = new JSONObject();
 				obj.putAll(SerializableInventory.serialize(slot.getValue()));
 				
-				stat.setString((i*5) + 3, obj.toJSONString());
-				stat.setInt((i*5) + 4, slot.getKey());
+				stat.setString((i*4) + 3, obj.toJSONString());
+				stat.setInt((i*4) + 4, slot.getKey());
 				i++;
 			}
 			
