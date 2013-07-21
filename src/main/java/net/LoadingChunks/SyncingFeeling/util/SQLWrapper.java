@@ -166,6 +166,8 @@ public class SQLWrapper {
 			
 			stat.execute();
 			
+			p.getInventory().clear();
+			
 			ResultSet result = stat.getResultSet();
 			
 			while(result.next()) {
