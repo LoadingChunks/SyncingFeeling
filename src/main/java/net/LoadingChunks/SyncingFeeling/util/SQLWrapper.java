@@ -94,7 +94,7 @@ public class SQLWrapper {
 				return;
 			
 			for(int i = 0; i < inv.getSlots().size(); i++) {
-				sqlstring = sqlstring.concat("(?,?,?,?,MD5(?))");
+				sqlstring = sqlstring.concat("(?,?,?,?)");
 				
 				if(i < inv.getSlots().size()-1)
 					sqlstring = sqlstring.concat(",");
@@ -113,7 +113,6 @@ public class SQLWrapper {
 				
 				stat.setString((i*5) + 3, obj.toJSONString());
 				stat.setInt((i*5) + 4, slot.getKey());
-				stat.setString((i*5) + 5, obj.toJSONString());
 				i++;
 			}
 			

@@ -19,7 +19,7 @@ public class RecoverTask extends BukkitRunnable {
 	@Override
 	public void run() {
 		if(p.hasPermission("sync.do")) {
-			plugin.getLogger().info("Checking " + p.getDisplayName() + "'s inventory...");
+			plugin.getLogger().info("Checking " + p.getName() + "'s inventory...");
 			SerializableInventory.recover(p.getPlayer());
 		}
 	}
