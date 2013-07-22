@@ -1,5 +1,6 @@
 package net.LoadingChunks.SyncingFeeling.util;
 
+import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -176,11 +177,12 @@ public class SQLWrapper {
 				JSONParser parser = new JSONParser();
 				try {
 					byte[] b64decoded = Base64.decode(result.getString("json").getBytes());
+					ByteBuffer bb = ByteBuffer.wrap(b64decoded);
 					
 					if(plugin.isDebugMode)
-						plugin.getLogger().info("Decoded B64: " + b64decoded.toString());
+						plugin.getLogger().info("Decoded B64: " + bb.toString());
 					
-					Map<String, Object> map = (Map<String, Object>) parser.parse(b64decoded.toString());
+					Map<String, Object> map = (Map<String, Object>) parser.parse(bb.toString());
 					ItemStack stack = (ItemStack) SerializableInventory.deserialize(map);
 					
 					if(slot == Slots.HELMET.slotNum()) {
