@@ -5,19 +5,18 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import net.LoadingChunks.SyncingFeeling.SyncingFeeling;
 import net.LoadingChunks.SyncingFeeling.Inventory.SerializableInventory;
+import net.minecraft.v1_6_R2.org.bouncycastle.util.encoders.Base64;
 
 public class SQLWrapper {
 	static private SyncingFeeling plugin;
@@ -111,7 +110,9 @@ public class SQLWrapper {
 				JSONObject obj = new JSONObject();
 				obj.putAll(SerializableInventory.serialize(slot.getValue()));
 				
-				stat.setString((i*4) + 3, obj.toJSONString());
+				byte[] b64slot = Base64.encode(obj.toJSONString().getBytes());
+				
+				stat.setString((i*4) + 3, new String(b64slot));
 				stat.setInt((i*4) + 4, slot.getKey());
 				i++;
 			}
@@ -174,7 +175,8 @@ public class SQLWrapper {
 				int slot = result.getInt("slot");
 				JSONParser parser = new JSONParser();
 				try {
-					Map<String, Object> map = (Map<String, Object>) parser.parse(result.getString("json"));
+					byte[] b64decoded = Base64.decode(result.getString("json"));
+					Map<String, Object> map = (Map<String, Object>) parser.parse(b64decoded.toString());
 					ItemStack stack = (ItemStack) SerializableInventory.deserialize(map);
 					
 					if(slot == Slots.HELMET.slotNum()) {
