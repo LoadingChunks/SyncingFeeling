@@ -62,7 +62,7 @@
 			             <configuration>
 			                 <artifactSet>
 			                     <includes>
-			                         <include>netminidev:json-smart</include>
+			                         <include>net.minidev:json-smart</include>
 			                     </includes>
 			                 </artifactSet>
 			             </configuration>
