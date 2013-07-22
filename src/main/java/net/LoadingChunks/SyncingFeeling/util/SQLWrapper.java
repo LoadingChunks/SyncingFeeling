@@ -11,9 +11,8 @@ import java.util.Map.Entry;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import net.minidev.json.*;
+import net.minidev.json.parser.*;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.LoadingChunks.SyncingFeeling.SyncingFeeling;
@@ -175,7 +174,7 @@ public class SQLWrapper {
 			
 			while(result.next()) {
 				int slot = result.getInt("slot");
-				JSONParser parser = new JSONParser();
+				JSONParser parser = new JSONParser(JSONParser.USE_INTEGER_STORAGE);
 				try {
 					String decoded = Base64Coder.decodeString(result.getString("json"));
 					
