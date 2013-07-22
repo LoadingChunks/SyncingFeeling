@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 import net.LoadingChunks.SyncingFeeling.SyncingFeeling;
 import net.LoadingChunks.SyncingFeeling.Inventory.SerializableInventory;
@@ -111,9 +112,9 @@ public class SQLWrapper {
 				JSONObject obj = new JSONObject();
 				obj.putAll(SerializableInventory.serialize(slot.getValue()));
 				
-				byte[] b64slot = Base64.encode(obj.toJSONString().getBytes());
+				String encoded = Base64Coder.encodeString(obj.toJSONString());
 				
-				stat.setString((i*4) + 3, new String(b64slot));
+				stat.setString((i*4) + 3, encoded);
 				stat.setInt((i*4) + 4, slot.getKey());
 				i++;
 			}
@@ -176,13 +177,12 @@ public class SQLWrapper {
 				int slot = result.getInt("slot");
 				JSONParser parser = new JSONParser();
 				try {
-					byte[] b64decoded = Base64.decode(result.getString("json").getBytes());
-					ByteBuffer bb = ByteBuffer.wrap(b64decoded);
+					String decoded = Base64Coder.decodeString(result.getString("json"));
 					
 					if(plugin.isDebugMode)
-						plugin.getLogger().info("Decoded B64: " + bb.toString());
+						plugin.getLogger().info("Decoded B64: " + decoded);
 					
-					Map<String, Object> map = (Map<String, Object>) parser.parse(bb.toString());
+					Map<String, Object> map = (Map<String, Object>) parser.parse(decoded);
 					ItemStack stack = (ItemStack) SerializableInventory.deserialize(map);
 					
 					if(slot == Slots.HELMET.slotNum()) {
