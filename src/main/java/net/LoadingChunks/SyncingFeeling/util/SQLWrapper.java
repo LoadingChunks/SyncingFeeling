@@ -176,6 +176,10 @@ public class SQLWrapper {
 				JSONParser parser = new JSONParser();
 				try {
 					byte[] b64decoded = Base64.decode(result.getString("json"));
+					
+					if(plugin.isDebugMode)
+						plugin.getLogger().info("Decoded B64: " + b64decoded.toString());
+					
 					Map<String, Object> map = (Map<String, Object>) parser.parse(b64decoded.toString());
 					ItemStack stack = (ItemStack) SerializableInventory.deserialize(map);
 					
