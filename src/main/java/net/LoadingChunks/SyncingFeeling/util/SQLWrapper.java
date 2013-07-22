@@ -175,7 +175,7 @@ public class SQLWrapper {
 				int slot = result.getInt("slot");
 				JSONParser parser = new JSONParser();
 				try {
-					byte[] b64decoded = Base64.decode(result.getString("json"));
+					byte[] b64decoded = Base64.decode(result.getString("json").getBytes());
 					
 					if(plugin.isDebugMode)
 						plugin.getLogger().info("Decoded B64: " + b64decoded.toString());
