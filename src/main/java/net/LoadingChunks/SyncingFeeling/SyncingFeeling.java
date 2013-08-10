@@ -17,6 +17,7 @@ package net.LoadingChunks.SyncingFeeling;
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import net.LoadingChunks.SyncingFeeling.Tasks.PingTask;
 import net.LoadingChunks.SyncingFeeling.util.SQLWrapper;
 
 import org.bukkit.plugin.PluginManager;
@@ -29,6 +30,7 @@ public class SyncingFeeling extends JavaPlugin {
 	private final SyncingFeelingEventListener eventListener = new SyncingFeelingEventListener(this);
 	private PluginManager pm;
 	public boolean isDebugMode = false;
+	private PingTask pingTask;
 	//ClassListeners
 
 	public void onDisable() {
@@ -53,6 +55,9 @@ public class SyncingFeeling extends JavaPlugin {
 		
 		saveConfig();
 		reloadConfig();
+		
+		pingTask = new PingTask(this);
+		pingTask.runTaskTimer(this, 30 * 60 * 20L, 30 * 60 * 20L);
 	}
 	
 	@Override

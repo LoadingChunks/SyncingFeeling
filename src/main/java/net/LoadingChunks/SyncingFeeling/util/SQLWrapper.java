@@ -57,6 +57,17 @@ public class SQLWrapper {
 		return success;
 	}
 	
+	static public void ping() {
+		PreparedStatement stat;
+		try {
+			stat = con.prepareStatement("SELECT 1 = 1");
+			stat.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	static public boolean reconnect() {
 		try {
 			if(con.isClosed()) {
@@ -88,7 +99,12 @@ public class SQLWrapper {
 	static public void commitSlots(Player p, SerializableInventory inv) {
 		try {
 			reconnect();
-			String sqlstring = "REPLACE INTO `inv_slots` (`server`,`player`,`json`,`slot`) VALUES ";
+			PreparedStatement delete = con.prepareStatement("DELETE FROM `inv_slots` WHERE `server` = ? AND `player` = ?");
+			delete.setString(1, SQLWrapper.plugin.getConfig().getString("general.server.name"));
+			delete.setString(2, p.getName());
+			delete.execute();
+
+			String sqlstring = "INSERT INTO `inv_slots` (`server`,`player`,`json`,`slot`) VALUES ";
 			
 			if(inv.getSlots().size() == 0)
 				return;
