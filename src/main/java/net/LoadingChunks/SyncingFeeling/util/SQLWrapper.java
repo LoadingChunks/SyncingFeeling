@@ -169,6 +169,10 @@ public class SQLWrapper {
 			stat.execute();
 			
 			p.getInventory().clear();
+			p.getInventory().setBoots(null);
+			p.getInventory().setChestplate(null);
+			p.getInventory().setHelmet(null);
+			p.getInventory().setLeggings(null);
 			
 			ResultSet result = stat.getResultSet();
 			
