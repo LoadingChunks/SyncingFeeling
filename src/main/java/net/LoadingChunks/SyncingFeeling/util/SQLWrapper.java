@@ -62,6 +62,8 @@ public class SQLWrapper {
 		try {
 			stat = con.prepareStatement("SELECT 1 = 1");
 			stat.execute();
+			if(plugin.isDebugMode)
+				plugin.getLogger().info("Pinging MySQL Server");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
